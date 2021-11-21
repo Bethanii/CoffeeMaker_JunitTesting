@@ -1,8 +1,6 @@
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import jdk.jfr.Timestamp;
 
 public class CoffeeMakerTest {
@@ -117,4 +115,38 @@ public class CoffeeMakerTest {
 		assertEquals(false, coffeeMaker.addRecipe(recipe4));
 	}
 
+	//deleting a recipe was not working in buggy code because the if statement wasn't higher than or equal to like in the fixed code
+	//buggy code would return nothing
+	//returned name means the item was deleted
+	@Test
+	public void testDeleteRecipe() throws Exception
+	{
+		coffeeMaker.addRecipe(recipe1);
+		Recipe [] recipeArray = coffeeMaker.getRecipes();
+		assertEquals("Coffee", coffeeMaker.deleteRecipe(0));
+	} 
+
+	//editing a recipe was not functioning properly for the same reason as above
+	//buggy code would return nothing
+	@Test
+	public void testEditRecipe() throws RecipeException
+	{
+		coffeeMaker.addRecipe(recipe1);
+		assertEquals("Coffee", coffeeMaker.editRecipe(0, recipe2));
+	}
+	@Test
+	//the operator in the addSuagr method was reversed in the buggy code
+	public void testAddSugar() throws InventoryException {
+		Inventory inventory = new Inventory();
+		inventory.addSugar("5");
+		assertEquals(20, inventory.getSugar());
+	}
+	
+	//use ingredients method is adding for getAmtCoffee
+	@Test
+	public void testUseIngredients() throws InventoryException {
+		Inventory inventory = new Inventory();
+		inventory.enoughIngredients(recipe1);
+		assertEquals(true, inventory.enoughIngredients(recipe1));
+	}
 }

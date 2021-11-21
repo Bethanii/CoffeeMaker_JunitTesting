@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import java.util.function.ToIntFunction;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ public class CoffeeMakerTest {
 	 * The object under test.
 	 */
 	private CoffeeMaker coffeeMaker;
+	private RecipeBook rp;
 	
 	// Sample recipes to use in testing.
 	private Recipe recipe1;
@@ -32,7 +35,7 @@ public class CoffeeMakerTest {
 		//Set up for r1
 		recipe1 = new Recipe();
 		recipe1.setName("Coffee");
-		recipe1.setAmtChocolate("0");
+		recipe1.setAmtChocolate("1");
 		recipe1.setAmtCoffee("3");
 		recipe1.setAmtMilk("1");
 		recipe1.setAmtSugar("1");
@@ -65,8 +68,6 @@ public class CoffeeMakerTest {
 		recipe4.setAmtSugar("1");
 		recipe4.setPrice("65");
 	}
-	
-	
 	/**
 	 * Given a coffee maker with the default inventory
 	 * When we add inventory with well-formed quantities
@@ -114,7 +115,49 @@ public class CoffeeMakerTest {
 		coffeeMaker.addRecipe(recipe1);
 		coffeeMaker.addRecipe(recipe2);
 		coffeeMaker.addRecipe(recipe3);
-		assertEquals(false, coffeeMaker.addRecipe(recipe4));
+		assertEquals(true, coffeeMaker.addRecipe(recipe4));
 	}
 
+	//now will return nothing
+	//I deleted the value at array position zero so it should come back null but instead comes back as nothing
+	//the placeholder does not get deleted but instead stays
+	@Test
+	public void testDeleteRecipe() throws Exception
+	{
+		coffeeMaker.addRecipe(recipe1);
+		coffeeMaker.addRecipe(recipe2);
+		Recipe [] recipeArray = coffeeMaker.getRecipes();
+		coffeeMaker.deleteRecipe(0);
+		assertEquals(null, recipeArray[0]);
+	} 
+
+	//this will have the same error as the recipe delete method
+	//except for this method it should return the name of the recipe
+	//instead it returns nothing because it is being set to an empty string
+	@Test
+	public void testEditRecipe() throws RecipeException
+	{
+		coffeeMaker.addRecipe(recipe1);
+		Recipe [] recipeArray = coffeeMaker.getRecipes();
+		coffeeMaker.editRecipe(0, recipe1);
+		assertEquals(null, recipeArray[0]);
+	}
+
+	//fails becasue operator is set incorrectly
+	//should equal 20 but instead equals 10
+	//it would only pass with a negative value
+	@Test
+	public void testAddSugarWithNegativeVaule() throws InventoryException {
+		Inventory inventory = new Inventory();
+		inventory.addSugar("-5");
+		assertEquals(10, inventory.getSugar());
+	}
+
+	//use ingredients method is adding for coffee
+	@Test
+	public void testUseIngredients() throws InventoryException {
+		Inventory inventory = new Inventory();
+		coffeeMaker.addRecipe(recipe1);
+		assertEquals(true, inventory.enoughIngredients(recipe1));
+	}
 }
